@@ -60,6 +60,7 @@ public class Object {
      *         class of this object.
      * @jls 15.8.2 Class Literals
      */
+    // 返回运行时的类对象
     public final native Class<?> getClass();
 
     /**
@@ -96,6 +97,11 @@ public class Object {
      * @return  a hash code value for this object.
      * @see     java.lang.Object#equals(java.lang.Object)
      * @see     java.lang.System#identityHashCode
+     */
+
+    /*
+       返回对象的hash值,一般都要重写
+       如果两个对象equals相等则它们的hash值一定相等,两个对象equals不等不一定hash值不相等
      */
     public native int hashCode();
 
@@ -144,6 +150,11 @@ public class Object {
      *          argument; {@code false} otherwise.
      * @see     #hashCode()
      * @see     java.util.HashMap
+     */
+    /*
+        判断两个对象是否'相等'，默认是比较两个对象的内存地址值是否相同
+        需要遵守自反性、对称性、一致性、传递性
+        重写此方法一般都要重写hashcode方法
      */
     public boolean equals(Object obj) {
         return (this == obj);
@@ -208,6 +219,15 @@ public class Object {
      *               throw this exception to indicate that an instance cannot
      *               be cloned.
      * @see java.lang.Cloneable
+     */
+    /*
+        克隆方法，需要被重写，并且克隆对象所属的类必须要实现Cloneable接口，
+        否则将会抛出CloneNotSupportedException异常
+        数组默认实现Cloneable接口
+        该方法是浅拷贝
+        *浅拷贝和深拷贝的区别*
+        1.浅拷贝对基本类型进行值传递，对引用类型传递的是对象的内存地址，因此对克隆对象中的引用类型进行修改也会影响原来的对象
+        2.深拷贝对基本类型进行值传递，对引用类型则创建一个新的对象并复制其值
      */
     protected native Object clone() throws CloneNotSupportedException;
 
