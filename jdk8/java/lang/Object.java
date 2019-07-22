@@ -34,6 +34,7 @@ package java.lang;
  * @see     java.lang.Class
  * @since   JDK1.0
  */
+// TODO 🌗
 public class Object {
 
     private static native void registerNatives();
@@ -252,6 +253,7 @@ public class Object {
      *
      * @return  a string representation of the object.
      */
+    //返回对象是字符串表示形式
     public String toString() {
         return getClass().getName() + "@" + Integer.toHexString(hashCode());
     }
@@ -287,6 +289,11 @@ public class Object {
      *               the owner of this object's monitor.
      * @see        java.lang.Object#notifyAll()
      * @see        java.lang.Object#wait()
+     */
+    /*
+        唤醒一个正在等待的线程，如果有多个等待线程则唤醒其中任意一个
+        唤醒的线程并不是立刻就能执行，需要获取到对象上的锁和获得CPU的执行权才能继续执行
+
      */
     public final native void notify();
 

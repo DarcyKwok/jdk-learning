@@ -107,16 +107,25 @@ import java.util.regex.PatternSyntaxException;
  * @see     java.nio.charset.Charset
  * @since   JDK1.0
  */
-
+/*
+    字符串是不可变的，如果要使字符串可变应该使用StringBuffer等
+    Java语言重载了+操作符对于字符串连接和其他对象转为字符串提供帮助
+    final修饰 不可被继承
+    实现Serializable接口支持序列化，Comparable支持自然排序，CharSequence表示字符序列
+ */
+// TODO 🌗
 public final class String
     implements java.io.Serializable, Comparable<String>, CharSequence {
     /** The value is used for character storage. */
+    // 不可变的字符数组
     private final char value[];
 
     /** Cache the hash code for the string */
+    // 字符串的hash值，默认为0
     private int hash; // Default to 0
 
     /** use serialVersionUID from JDK 1.0.2 for interoperability */
+    // 序列化标识，保证序列化和反序列化时版本一致
     private static final long serialVersionUID = -6849794470754667710L;
 
     /**
@@ -126,6 +135,7 @@ public final class String
      * <a href="{@docRoot}/../platform/serialization/spec/output.html">
      * Object Serialization Specification, Section 6.2, "Stream Elements"</a>
      */
+    // 此处不懂，暂时跳过
     private static final ObjectStreamField[] serialPersistentFields =
         new ObjectStreamField[0];
 
@@ -134,6 +144,7 @@ public final class String
      * an empty character sequence.  Note that use of this constructor is
      * unnecessary since Strings are immutable.
      */
+    // 默认构造方法创建一个空字符串
     public String() {
         this.value = "".value;
     }
@@ -148,6 +159,7 @@ public final class String
      * @param  original
      *         A {@code String}
      */
+    // 根据给定的字符串创建它的一个副本
     public String(String original) {
         this.value = original.value;
         this.hash = original.hash;
@@ -162,6 +174,7 @@ public final class String
      * @param  value
      *         The initial value of the string
      */
+    // 根据给定的字符数组创建一个字符串
     public String(char value[]) {
         this.value = Arrays.copyOf(value, value.length);
     }
@@ -187,6 +200,7 @@ public final class String
      *          If the {@code offset} and {@code count} arguments index
      *          characters outside the bounds of the {@code value} array
      */
+    // 根据字符数组、初始偏移量和长度来创建一个字符串
     public String(char value[], int offset, int count) {
         if (offset < 0) {
             throw new StringIndexOutOfBoundsException(offset);
@@ -562,6 +576,7 @@ public final class String
      *
      * @since  JDK1.1
      */
+    // 根据字节数组创建字符串
     public String(byte bytes[]) {
         this(bytes, 0, bytes.length);
     }
@@ -575,6 +590,7 @@ public final class String
      * @param  buffer
      *         A {@code StringBuffer}
      */
+    // 根据StringBuffer创建字符串，加了同步锁保障多线程安全性
     public String(StringBuffer buffer) {
         synchronized(buffer) {
             this.value = Arrays.copyOf(buffer.getValue(), buffer.length());
@@ -596,6 +612,7 @@ public final class String
      *
      * @since  1.5
      */
+    // 根据StringBuilder创建字符串
     public String(StringBuilder builder) {
         this.value = Arrays.copyOf(builder.getValue(), builder.length());
     }
@@ -606,6 +623,9 @@ public final class String
     * a separate constructor is needed because we already have a public
     * String(char[]) constructor that makes a copy of the given char[].
     */
+    // 增加一个boolean参数来区分已经存在的public String(char[] value)方法，
+    // 该构造方法可以将传入的字符数组直接赋值给value属性，不用再逐一复制，提高了效率，
+    // 但是它是不安全的，将会改变String的不可变性，所以它是包私有的，只提供内部代码使用
     String(char[] value, boolean share) {
         // assert share : "unshared not supported";
         this.value = value;
@@ -619,6 +639,7 @@ public final class String
      * @return  the length of the sequence of characters represented by this
      *          object.
      */
+    // 返回字符串的长度
     public int length() {
         return value.length;
     }
@@ -631,6 +652,7 @@ public final class String
      *
      * @since 1.6
      */
+    // 判断是不是空字符串
     public boolean isEmpty() {
         return value.length == 0;
     }
@@ -653,6 +675,7 @@ public final class String
      *             argument is negative or not less than the length of this
      *             string.
      */
+    // 返回指定索引处的字符值
     public char charAt(int index) {
         if ((index < 0) || (index >= value.length)) {
             throw new StringIndexOutOfBoundsException(index);
@@ -682,6 +705,7 @@ public final class String
      *             string.
      * @since      1.5
      */
+    // 返回指定索引处的字符值
     public int codePointAt(int index) {
         if ((index < 0) || (index >= value.length)) {
             throw new StringIndexOutOfBoundsException(index);
@@ -711,6 +735,7 @@ public final class String
      *            of this string.
      * @since     1.5
      */
+    // 返回指定索引前的字符值
     public int codePointBefore(int index) {
         int i = index - 1;
         if ((i < 0) || (i >= value.length)) {
@@ -740,6 +765,7 @@ public final class String
      * {@code beginIndex} is larger than {@code endIndex}.
      * @since  1.5
      */
+    // 返回开始索引和结束索引处的字符数量
     public int codePointCount(int beginIndex, int endIndex) {
         if (beginIndex < 0 || endIndex > value.length || beginIndex > endIndex) {
             throw new IndexOutOfBoundsException();
@@ -779,6 +805,7 @@ public final class String
      * Copy characters from this string into dst starting at dstBegin.
      * This method doesn't perform any range checking.
      */
+    // 将字符串的字符数组复制到给定的字符数组中
     void getChars(char dst[], int dstBegin) {
         System.arraycopy(value, 0, dst, dstBegin, value.length);
     }
@@ -973,17 +1000,22 @@ public final class String
      * @see  #compareTo(String)
      * @see  #equalsIgnoreCase(String)
      */
+    // 比较两个字符串是否相等
     public boolean equals(Object anObject) {
+        // 两个字符串是同一个对象
         if (this == anObject) {
             return true;
         }
+        // 比较的对象是否是String类型的，不是则false
         if (anObject instanceof String) {
             String anotherString = (String)anObject;
             int n = value.length;
+            // 比较两个字符串长度是否相等
             if (n == anotherString.value.length) {
                 char v1[] = value;
                 char v2[] = anotherString.value;
                 int i = 0;
+                // 逐一比较字符数组中的值是否相同
                 while (n-- != 0) {
                     if (v1[i] != v2[i])
                         return false;
@@ -1010,17 +1042,21 @@ public final class String
      *
      * @since  1.4
      */
+    // 比较字符串和StringBuffer中的内容是否相同
     public boolean contentEquals(StringBuffer sb) {
         return contentEquals((CharSequence)sb);
     }
 
+    // 没有加同步的比较
     private boolean nonSyncContentEquals(AbstractStringBuilder sb) {
         char v1[] = value;
         char v2[] = sb.getValue();
         int n = v1.length;
+        // 长度不同则false
         if (n != sb.length()) {
             return false;
         }
+        // 逐一比较字符数组的值
         for (int i = 0; i < n; i++) {
             if (v1[i] != v2[i]) {
                 return false;
@@ -1045,10 +1081,12 @@ public final class String
      *
      * @since  1.5
      */
+    // 比较字符串和给定的字符序列的内容是否相同
     public boolean contentEquals(CharSequence cs) {
         // Argument is a StringBuffer, StringBuilder
         if (cs instanceof AbstractStringBuilder) {
             if (cs instanceof StringBuffer) {
+                // 加同步
                 synchronized(cs) {
                    return nonSyncContentEquals((AbstractStringBuilder)cs);
                 }
@@ -1102,6 +1140,7 @@ public final class String
      *
      * @see  #equals(Object)
      */
+    // 忽略大小写比较是否相同
     public boolean equalsIgnoreCase(String anotherString) {
         return (this == anotherString) ? true
                 : (anotherString != null)
@@ -1135,13 +1174,13 @@ public final class String
      * <blockquote><pre>
      * this.charAt(k)-anotherString.charAt(k)
      * </pre></blockquote>
-     * If there is no index position at which they differ, then the shorter
-     * string lexicographically precedes the longer string. In this case,
-     * {@code compareTo} returns the difference of the lengths of the
-     * strings -- that is, the value:
-     * <blockquote><pre>
-     * this.length()-anotherString.length()
-     * </pre></blockquote>
+     * f there is no index position at which they differ, then the shorter
+     *      * string lexicographically precedes the longer string. In this case,
+     *      * {@code compareTo} returns the difference of the lengths of the
+     *      * strings -- that is, the value:
+     *      * <blockquote><pre>
+     *      * this.length()-anotherString.length()
+     *      * </pre></blockquote>I
      *
      * @param   anotherString   the {@code String} to be compared.
      * @return  the value {@code 0} if the argument string is equal to
@@ -1150,6 +1189,7 @@ public final class String
      *          value greater than {@code 0} if this string is
      *          lexicographically greater than the string argument.
      */
+    // 按字典顺序比较字符串,如果调用此方法的字符串比参数中的字符串字典顺序靠前则返回负数，相同返回0，字典顺序靠后则返回正数
     public int compareTo(String anotherString) {
         int len1 = value.length;
         int len2 = anotherString.value.length;
@@ -1181,6 +1221,7 @@ public final class String
      * @see     java.text.Collator#compare(String, String)
      * @since   1.2
      */
+    // 忽略大小写的比较器
     public static final Comparator<String> CASE_INSENSITIVE_ORDER
                                          = new CaseInsensitiveComparator();
     private static class CaseInsensitiveComparator
@@ -1235,6 +1276,7 @@ public final class String
      * @see     java.text.Collator#compare(String, String)
      * @since   1.2
      */
+    // 忽略大小写进行比较，利用了上面的比较器
     public int compareToIgnoreCase(String str) {
         return CASE_INSENSITIVE_ORDER.compare(this, str);
     }
@@ -1271,6 +1313,7 @@ public final class String
      *          exactly matches the specified subregion of the string argument;
      *          {@code false} otherwise.
      */
+    // 测试两个字符串在一个区域内是否相等
     public boolean regionMatches(int toffset, String other, int ooffset,
             int len) {
         char ta[] = value;
@@ -1341,6 +1384,7 @@ public final class String
      *          or case insensitive depends on the {@code ignoreCase}
      *          argument.
      */
+    // 测试两个字符串在一个区域内是否相等，增加是否忽略大小写
     public boolean regionMatches(boolean ignoreCase, int toffset,
             String other, int ooffset, int len) {
         char ta[] = value;
