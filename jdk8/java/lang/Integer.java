@@ -49,17 +49,24 @@ import java.lang.annotation.Native;
  * @author  Joseph D. Darcy
  * @since JDK1.0
  */
+/*
+    int类型的包装类，封装了一系列便利操作的工具方法
+    继承Number类可以转换为其他数值类型
+    实现了Comparable接口，可实现排序功能
+ */
 public final class Integer extends Number implements Comparable<Integer> {
     /**
      * A constant holding the minimum value an {@code int} can
      * have, -2<sup>31</sup>.
      */
+    // int最小值
     @Native public static final int   MIN_VALUE = 0x80000000;
 
     /**
      * A constant holding the maximum value an {@code int} can
      * have, 2<sup>31</sup>-1.
      */
+    // int最大值
     @Native public static final int   MAX_VALUE = 0x7fffffff;
 
     /**
